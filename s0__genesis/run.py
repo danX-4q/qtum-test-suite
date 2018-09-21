@@ -25,16 +25,16 @@ def run(cs_inst, logger):
     qa_ha = []
     for i in range(10) :
         cmd = 'wrp-qtum-cli getnewaddress'
-        qa = cs_inst.check_output(cmd, shell=True) #end with \n
+        qa = cs_inst.check_output(cmd, shell=True).strip()
         cmd = 'wrp-qtum-cli gethexaddress %s' % qa
-        ha = cs_inst.check_output(cmd, shell=True) #end with \n
+        ha = cs_inst.check_output(cmd, shell=True).strip()
         qa_ha.append((qa, ha))
 
     file_name = 'rt-data/qa_ha.txt'
     with open(file_name, 'w') as f:
         i = 0
         for qa, ha in qa_ha :
-            line = 'QA_%d:%sHA_%d:%s' % (i, qa, i, ha)
+            line = 'QA_%d:%s HA_%d:%s\n' % (i, qa, i, ha)
             f.write(line)
             i += 1
     logger.info('dump addresses to file %s ' % file_name)

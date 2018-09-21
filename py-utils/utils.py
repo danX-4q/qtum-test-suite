@@ -33,7 +33,7 @@ class CSubprocess :
 
     def check_output(self, cmd, shell=False):
         self.logger.info('cmd-line: %s' % cmd)
-        ret = subprocess.check_output(cmd, shell=shell)
+        ret = subprocess.check_output(cmd, shell=shell).strip()
         self.logger.info('ret-out: %s' % ret)
         return ret
 
