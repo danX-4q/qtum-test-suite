@@ -4,6 +4,11 @@
 import subprocess
 import argparse,sys
 
+sys.path.append('../py-utils/')
+import utils
+
+cs_inst = None
+
 def dry_run() :
     cmds = [
         'wrp-qtum-cli generate 800',
@@ -14,18 +19,15 @@ def dry_run() :
     for c in cmds:
         print c
 
-def run():
-    subprocess.check_call(
-        'wrp-qtum-cli generate 800',
-        shell=True
-    )
+def run(cs_inst, logger):
+    cs_inst.check_call('wrp-qtum-cli generate 10', shell=True)
 
     qa_ha = []
     for i in range(10) :
         cmd = 'wrp-qtum-cli getnewaddress'
-        qa = subprocess.check_output(cmd, shell=True) #end with \n
+        qa = cs_inst.check_output(cmd, shell=True) #end with \n
         cmd = 'wrp-qtum-cli gethexaddress %s' % qa
-        ha = subprocess.check_output(cmd, shell=True) #end with \n
+        ha = cs_inst.check_output(cmd, shell=True) #end with \n
         qa_ha.append((qa, ha))
 
     file_name = 'rt-data/qa_ha.txt'
@@ -35,17 +37,14 @@ def run():
             line = 'QA_%d:%sHA_%d:%s' % (i, qa, i, ha)
             f.write(line)
             i += 1
-    print 'dump addresses to file %s ' % file_name
-    print '-' * 20
-
-    print 'show total balance:'
-    subprocess.check_call(
+    logger.info('dump addresses to file %s ' % file_name)
+    cs_inst.check_output(
         'wrp-qtum-cli getbalance',
         shell=True
     )
 
 def main() :
-
+    global cs_inst
     parser = argparse.ArgumentParser(
             description="qtum-test-suite -- s0__genesis",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -55,10 +54,13 @@ def main() :
     prog_args = parser.parse_args()
     #print prog_args
 
+    logger = utils.make_logger('./rt-data/run.log')
+    cs_inst = utils.CSubprocess(logger)
+
     if prog_args.dry_run :
         dry_run()
     else :
-        run()
+        run(cs_inst, logger)
 
 if __name__ == '__main__' :
     main()
