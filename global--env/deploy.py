@@ -1,4 +1,4 @@
-#/usr/bin/env python2.7
+#!/usr/bin/env python2.7
 #-*- coding: utf-8 -*-
 
 from copy import deepcopy
@@ -55,21 +55,25 @@ def main() :
         f_s = os.path.join(node_dir, filename)
         f_d = os.path.join(QTUM_BIN, filename)
         shutil.copy(f_s, f_d)
+        os.system('chmod +x %s ' % f_d)
         ####
         filename = node_name + '--' + 'wrp-qtum-cli.sh'
         f_s = os.path.join(node_dir, filename)
         f_d = os.path.join(QTUM_BIN, filename)
         shutil.copy(f_s, f_d)
+        os.system('chmod +x %s ' % f_d)
         ####
         filename = node_name + '--' + 'wrp-solar.sh'
         f_s = os.path.join(node_dir, filename)
         f_d = os.path.join(QTUM_BIN, filename)
         shutil.copy(f_s, f_d)
+        os.system('chmod +x %s ' % f_d)
 
     ####
     f_s = os.path.join(DST_DIR, 'qtum-path.sh')
     f_d = os.path.join('/etc/profile.d', 'qtum-path.sh')
     cmd = "sudo cp -rf %s %s" % (f_s, f_d)
+    print "cmd(%s) to set PATH, sudo, need root's password" % cmd
     os.system(cmd)
 
 if __name__ == '__main__' :
