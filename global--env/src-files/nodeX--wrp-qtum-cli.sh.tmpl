@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cd %(QTUM_BIN)s
+
+PARA__DATADIR="-datadir=%(NODEX__QTUM_DATADIR)s"
+CMD="./qtum-cli $PARA__DATADIR"
+
+if [[ "$1" == decoderawtxid ]]
+then
+	$CMD decoderawtransaction \
+	 $($CMD gettransaction "$2" | sed -n -e 's/^[[:space:]]*"hex":[[:space:]]"//g' -e 's/"$//gp')
+else
+	$CMD $@
+fi
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd %(QTUM_BIN)s
+
+PARA__DATADIR="-datadir=%(NODEX__QTUM_DATADIR)s"
+CMD="./qtumd $PARA__DATADIR"
+
+$CMD $@
