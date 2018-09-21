@@ -1,3 +1,5 @@
 
+!.gitkeep
 *.pyc
 global--env/dst-files/*
+*/rt-data/*
