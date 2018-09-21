@@ -14,18 +14,22 @@ def dry_run() :
         'wrp-qtum-cli getnewaddress',
         'wrp-qtum-cli sendtoaddress <new-address> <value>',
         'wrp-qtum-cli gettransaction <txid>',
-        'wrp-qtum-cli decoderawtxid <txid>'
+        'wrp-qtum-cli decoderawtxid <txid>',
+        #'wrp-qtum-cli listunspent 0 50 <address-list>'
+        'wrp-qtum-cli listunspent 0 50'
     ]
     for c in cmds:
         print c
 
 def run(cs_inst, logger):
 
-    cmd = 'wrp-qtum-cli getnewaddress'
-    address = cs_inst.check_output(cmd, shell=True)
+    address = cs_inst.check_output('wrp-qtum-cli getnewaddress', shell=True)
     txid = cs_inst.check_output('wrp-qtum-cli sendtoaddress %s 100' % address, shell=True)
     txinfo = cs_inst.check_output('wrp-qtum-cli gettransaction %s' % txid, shell=True)
     cs_inst.check_output('wrp-qtum-cli decoderawtxid %s' % txid, shell=True)
+    #cmd = 'wrp-qtum-cli listunspent 0 50 "[\\"%s\\"]"' % address
+    cmd = 'wrp-qtum-cli listunspent 0 50'
+    cs_inst.check_output(cmd, shell=True)
 
 def main() :
     global cs_inst
