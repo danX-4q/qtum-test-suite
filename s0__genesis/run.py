@@ -25,9 +25,9 @@ def run(cs_inst, logger):
     qa_ha = []
     for i in range(10) :
         cmd = 'wrp-qtum-cli getnewaddress'
-        qa = cs_inst.check_output(cmd, shell=True).strip()
+        qa = cs_inst.check_output(cmd, shell=True)
         cmd = 'wrp-qtum-cli gethexaddress %s' % qa
-        ha = cs_inst.check_output(cmd, shell=True).strip()
+        ha = cs_inst.check_output(cmd, shell=True)
         qa_ha.append((qa, ha))
 
     file_name = 'rt-data/qa_ha.txt'
