@@ -73,8 +73,25 @@ def main() :
     f_s = os.path.join(DST_DIR, 'qtum-path.sh')
     f_d = os.path.join('/etc/profile.d', 'qtum-path.sh')
     cmd = "sudo cp -rf %s %s" % (f_s, f_d)
-    print "cmd(%s) to set PATH, sudo, need root's password" % cmd
+    print "cmd: %s ; to set PATH" % cmd
     os.system(cmd)
+
+    os.chdir(QTUM_BIN)
+    ####
+    sl_list = [
+        (QTUM_DFT_NODE + '--' + 'wrp-qtumd.sh', 'wrp-qtumd'),
+        (QTUM_DFT_NODE + '--' + 'wrp-qtum-cli.sh', 'wrp-qtum-cli'),
+        (QTUM_DFT_NODE + '--' + 'wrp-solar.sh', 'wrp-solar'),
+    ]
+    for (f_r, f_l) in sl_list :
+        try:
+            os.remove(f_l)
+        except OSError as e:
+            if e.errno == 2:
+                pass
+            else :
+                raise
+        os.symlink(f_r, f_l)
 
 if __name__ == '__main__' :
     main()

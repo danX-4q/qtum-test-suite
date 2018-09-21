@@ -23,3 +23,5 @@ QTUM_NODES  =   {
         'NODEX__QTUM_RPC' : "http://test:test@localhost:%d" % 14889
     }
 }
+
+QTUM_DFT_NODE = 'node1'
