@@ -2,9 +2,19 @@
 #-*- coding: utf-8 -*-
 
 import subprocess
+import argparse,sys
 
+def dry_run() :
+    cmds = [
+        'wrp-qtum-cli generate 800',
+        'wrp-qtum-cli getnewaddress',
+        'wrp-qtum-cli gethexaddress <new-address>',
+        'wrp-qtum-cli getbalance'
+    ]
+    for c in cmds:
+        print c
 
-def main() :
+def run():
     subprocess.check_call(
         'wrp-qtum-cli generate 800',
         shell=True
@@ -34,6 +44,21 @@ def main() :
         shell=True
     )
 
+def main() :
+
+    parser = argparse.ArgumentParser(
+            description="qtum-test-suite -- s0__genesis",
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument('-d', '--dry-run', action='store_true',
+                        dest='dry_run', help='enable dry-run')
+    prog_args = parser.parse_args()
+    #print prog_args
+
+    if prog_args.dry_run :
+        dry_run()
+    else :
+        run()
 
 if __name__ == '__main__' :
     main()
