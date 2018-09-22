@@ -2,4 +2,7 @@
 !.gitkeep
 *.pyc
 global--env/dst-files/*
+s2__erc20-transfer-token/qtumjs-cli/
+
 */rt-data/*
+

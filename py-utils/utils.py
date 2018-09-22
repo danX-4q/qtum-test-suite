@@ -4,6 +4,47 @@
 import logging
 from logging.handlers import RotatingFileHandler
 import subprocess
+from copy import deepcopy
+
+import sys
+sys.path.append('../global--env/')
+from envconfig import *
+
+class CmdTmpl:
+    def __init__(self):
+        self.ct_dict = {}
+    
+    @staticmethod
+    def qtum_cli__gethexaddress(qa):
+        return 'wrp-qtum-cli gethexaddress %s' % qa
+
+    @staticmethod
+    def qtum_cli__fromhexaddress(ha):
+        return 'wrp-qtum-cli fromhexaddress %s' % ha
+
+    @staticmethod
+    def qtum_cli__getnewaddress():
+        return ('wrp-qtum-cli getnewaddress')
+
+    @staticmethod
+    def git_clone(url, dst_dir=''):
+        return ('git clone %s %s' % (url, dst_dir))
+
+    @staticmethod
+    def qtum_cli__sendtoaddress(qa, value):
+        return ('wrp-qtum-cli sendtoaddress %s %s' % (qa, value))
+
+    @staticmethod
+    def qtum_cli__gettransaction(txid):
+        return ('wrp-qtum-cli gettransaction %s' % txid)
+
+    @staticmethod
+    def qtum_cli__decoderawtxid(txid):
+        return ('wrp-qtum-cli decoderawtxid %s' % txid)
+
+    @staticmethod
+    def qtum_cli__listunspent(min_s=0, max_s=10, addr_filter_json=''):
+        return ('wrp-qtum-cli listunspent %s %s %s' % (min_s, max_s, addr_filter_json))
 
 def make_logger(log_file_name) :
 
@@ -21,7 +62,6 @@ def make_logger(log_file_name) :
     return logger
 
 class CSubprocess :
-
     def __init__(self, logger):
         self.logger = logger
     
@@ -37,4 +77,51 @@ class CSubprocess :
         self.logger.info('ret-out: %s' % ret)
         return ret
 
+class CQHAddress:
+    def __init__(self, cs_inst):
+        self.cs_inst = cs_inst
+        self.qa = None
+        self.ha = None
+    
+    def setQa(self, qa):
+        self.qa = qa
+        self.ha = self.cs_inst.check_output(
+            CmdTmpl.qtum_cli__gethexaddress(qa),
+            shell=True
+        )
+    
+    def setHa(self, ha):
+        self.ha = ha
+        self.qa = self.cs_inst.check_output(
+            CmdTmpl.qtum_cli__fromhexaddress(ha),
+            shell=True
+        )
 
+    def getQa(self):
+        return self.qa
+
+    def __str__(self):
+        return ('{"qa":"%s","ha":"%s"}' % (self.qa, self.ha))
+
+class CEnv:
+    def __init__(self):
+        self.env_kv = self.load_env_kv()
+        self.prog_env = self.env_kv[0]
+        self.nodes_env = self.env_kv[1]
+
+    def load_env_kv(self) :    #return [prog_env, nodes_env]
+        prog = {
+            'QTUM_PREFIX' : QTUM_PREFIX,
+            'QTUM_BIN' : QTUM_BIN,
+            'CMD_QTUMD': CMD_QTUMD,
+            'CMD_QTUMCLI': CMD_QTUMCLI,
+            'QTUM_DFT_NODE': QTUM_DFT_NODE,
+        }
+
+        return [
+            deepcopy(prog),
+            deepcopy(QTUM_NODES)
+        ]
+
+    def apply_env_callback(self, cbfun):
+        cbfun(self.prog_env, self.nodes_env)
