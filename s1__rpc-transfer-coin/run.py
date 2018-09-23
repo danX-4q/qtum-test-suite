@@ -21,15 +21,32 @@ def dry_run() :
     for c in cmds:
         print c
 
+def transfer_coin_to_a(cs_inst, logger):
+
+    cmd = utils.CmdBuiler.qtum_cli__getnewaddress()
+    address = cs_inst.check_output(cmd, shell=True)
+    cmd = utils.CmdBuiler.qtum_cli__sendtoaddress(address, 100)
+    txid = cs_inst.check_output(cmd, shell=True)
+    cmd = utils.CmdBuiler.qtum_cli__gettransaction(txid)
+    cs_inst.check_output(cmd, shell=True)
+    cmd = utils.CmdBuiler.qtum_cli__decoderawtxid(txid)
+    cs_inst.check_output(cmd, shell=True)
+    cmd = utils.CmdBuiler.qtum_cli__listunspent()
+    cs_inst.check_output(cmd, shell=True)
+
+def go_step_by_step(cs_inst, logger):
+    step_list = [
+        transfer_coin_to_a,
+    ]
+    for i in range(len(step_list)):
+        step_name = 'step' + str(i)
+        logger.info(step_name + '--' + step_list[i].__name__ + ' begin:')
+        step_list[i](cs_inst, logger)
+        logger.info(step_name + '--' + step_list[i].__name__ + ' end.')
+
 def run(cs_inst, logger):
 
-    address = cs_inst.check_output('wrp-qtum-cli getnewaddress', shell=True)
-    txid = cs_inst.check_output('wrp-qtum-cli sendtoaddress %s 100' % address, shell=True)
-    txinfo = cs_inst.check_output('wrp-qtum-cli gettransaction %s' % txid, shell=True)
-    cs_inst.check_output('wrp-qtum-cli decoderawtxid %s' % txid, shell=True)
-    #cmd = 'wrp-qtum-cli listunspent 0 50 "[\\"%s\\"]"' % address
-    cmd = 'wrp-qtum-cli listunspent 0 50'
-    cs_inst.check_output(cmd, shell=True)
+    go_step_by_step(cs_inst, logger)
 
 def main() :
     global cs_inst

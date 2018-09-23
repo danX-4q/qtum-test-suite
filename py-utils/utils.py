@@ -10,7 +10,7 @@ import sys
 sys.path.append('../global--env/')
 from envconfig import *
 
-class CmdTmpl:
+class CmdBuiler:
     def __init__(self):
         self.ct_dict = {}
     
@@ -31,7 +31,7 @@ class CmdTmpl:
         return ('git clone %s %s' % (url, dst_dir))
 
     @staticmethod
-    def qtum_cli__sendtoaddress(qa, value):
+    def qtum_cli__sendtoaddress(qa, value=100):
         return ('wrp-qtum-cli sendtoaddress %s %s' % (qa, value))
 
     @staticmethod
@@ -86,14 +86,14 @@ class CQHAddress:
     def setQa(self, qa):
         self.qa = qa
         self.ha = self.cs_inst.check_output(
-            CmdTmpl.qtum_cli__gethexaddress(qa),
+            CmdBuiler.qtum_cli__gethexaddress(qa),
             shell=True
         )
     
     def setHa(self, ha):
         self.ha = ha
         self.qa = self.cs_inst.check_output(
-            CmdTmpl.qtum_cli__fromhexaddress(ha),
+            CmdBuiler.qtum_cli__fromhexaddress(ha),
             shell=True
         )
 

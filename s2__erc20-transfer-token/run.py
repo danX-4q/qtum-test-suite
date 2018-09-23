@@ -28,17 +28,17 @@ def dry_run() :
 
 def step0_prepare(cs_inst, logger):
     global addr_dict
-    qa = cs_inst.check_output(utils.CmdTmpl.qtum_cli__getnewaddress(), shell=True)
+    qa = cs_inst.check_output(utils.CmdBuiler.qtum_cli__getnewaddress(), shell=True)
     qha = utils.CQHAddress(cs_inst)
     qha.setQa(qa)
     addr_dict.update({'a' : qha})
 
-    qa = cs_inst.check_output(utils.CmdTmpl.qtum_cli__getnewaddress(), shell=True)
+    qa = cs_inst.check_output(utils.CmdBuiler.qtum_cli__getnewaddress(), shell=True)
     qha = utils.CQHAddress(cs_inst)
     qha.setQa(qa)
     addr_dict.update({'b' : qha})
 
-    qa = cs_inst.check_output(utils.CmdTmpl.qtum_cli__getnewaddress(), shell=True)
+    qa = cs_inst.check_output(utils.CmdBuiler.qtum_cli__getnewaddress(), shell=True)
     qha = utils.CQHAddress(cs_inst)
     qha.setQa(qa)
     addr_dict.update({'c' : qha})
@@ -77,13 +77,13 @@ def step0_prepare(cs_inst, logger):
 def transfer_coin_to_a(cs_inst, logger):
     global addr_dict
     qha_a = addr_dict['a']
-    cmd = utils.CmdTmpl.qtum_cli__sendtoaddress(qha_a.getQa(), 100)
+    cmd = utils.CmdBuiler.qtum_cli__sendtoaddress(qha_a.getQa(), 100)
     txid = cs_inst.check_output(cmd, shell=True)
-    cmd = utils.CmdTmpl.qtum_cli__gettransaction(txid)
+    cmd = utils.CmdBuiler.qtum_cli__gettransaction(txid)
     cs_inst.check_output(cmd, shell=True)
-    cmd = utils.CmdTmpl.qtum_cli__decoderawtxid(txid)
+    cmd = utils.CmdBuiler.qtum_cli__decoderawtxid(txid)
     cs_inst.check_output(cmd, shell=True)
-    cmd = utils.CmdTmpl.qtum_cli__listunspent()
+    cmd = utils.CmdBuiler.qtum_cli__listunspent()
     cs_inst.check_output(cmd, shell=True)
 
 def a_create_erc20contract(cs_inst, logger):
@@ -100,16 +100,18 @@ def step5_b_transfer_token_to_c(cs_inst, logger):
 
 def go_step_by_step(cs_inst, logger):
     step_list = [
-        ('step1', transfer_coin_to_a),
-        #('step2', a_create_erc20contract),
-        #('step3', a_deploy_contract),
-        #('step4', a_mint_token),
-        #('step5', a_transfer_token_to_b),
-        #('step6', b_transfer_token_to_c),
+        transfer_coin_to_a,
+        a_create_erc20contract,
+        #a_deploy_contract,
+        #a_mint_token,
+        #a_transfer_token_to_b,
+        #b_transfer_token_to_c
     ]
-    for s in step_list:
-        logger.info(s[0] + '__' + s[1].__name__)
-        s[1](cs_inst, logger)
+    for i in range(len(step_list)):
+        step_name = 'step' + str(i)
+        logger.info(step_name + '--' + step_list[i].__name__ + ' begin:')
+        step_list[i](cs_inst, logger)
+        logger.info(step_name + '--' + step_list[i].__name__ + ' end.')
 
 def run(cs_inst, logger):
 
