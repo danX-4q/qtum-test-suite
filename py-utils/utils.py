@@ -46,6 +46,22 @@ class CmdBuiler:
     def qtum_cli__listunspent(min_s=0, max_s=10, addr_filter_json=''):
         return ('wrp-qtum-cli listunspent %s %s %s' % (min_s, max_s, addr_filter_json))
 
+    @staticmethod
+    def solar__deploy(sender, contract_file, construct_args_str):
+        return ('wrp-solar --qtum_sender=%s deploy --force %s %s' % (sender, contract_file, construct_args_str))
+    
+    @staticmethod
+    def solar__status():
+        return ('wrp-solar status')
+
+    @staticmethod
+    def qtumjs_cli__mint(ha, value=1000):
+        return ('node wrp-index.js mint %s %s' % (ha, value))
+
+    @staticmethod
+    def qtumjs_cli__events():
+        return ('node wrp-index.js events')
+
 def make_logger(log_file_name) :
 
     logging.basicConfig(level=logging.DEBUG, 
@@ -77,6 +93,20 @@ class CSubprocess :
         self.logger.info('ret-out: %s' % ret)
         return ret
 
+    def popen(self, cmd, shell=False, stdout=subprocess.PIPE) :
+        self.logger.info('cmd-line(popened): %s' % cmd)
+        p = subprocess.Popen(cmd,shell=shell,stdout=stdout)
+        return p
+
+    def popen_stdout(self, p):
+        ret = ''
+        for i in iter(p.stdout.readline, b''):  #until meet the strine ''
+            ret += i
+        self.logger.info('ret-out(popened): %s' % ret)
+        return ret
+
+
+
 class CQHAddress:
     def __init__(self, cs_inst):
         self.cs_inst = cs_inst
@@ -99,6 +129,9 @@ class CQHAddress:
 
     def getQa(self):
         return self.qa
+
+    def getHa(self):
+        return self.ha
 
     def __str__(self):
         return ('{"qa":"%s","ha":"%s"}' % (self.qa, self.ha))

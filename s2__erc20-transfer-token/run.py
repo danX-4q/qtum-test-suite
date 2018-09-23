@@ -4,6 +4,7 @@
 import subprocess
 import os
 import argparse
+import json
 
 import sys
 sys.path.append('../py-utils/')
@@ -87,10 +88,33 @@ def transfer_coin_to_a(cs_inst, logger):
     cs_inst.check_output(cmd, shell=True)
 
 def a_create_erc20contract(cs_inst, logger):
-    pass
+    global addr_dict
+    qha_a = addr_dict['a']
+    cmd = utils.CmdBuiler.solar__deploy(
+        qha_a.getQa(), 
+        'zeppelin-solidity/contracts/token/ERC20/ERC20Capped.sol',
+        '[21000000]'
+    )
+    cs_inst.check_call(cmd, shell=True)
+    cmd = utils.CmdBuiler.solar__status()
+    cs_inst.check_output(cmd, shell=True)
 
 def a_mint_token(cs_inst, logger):
-    pass
+    global addr_dict
+    qha_a = addr_dict['a']
+    cmd = utils.CmdBuiler.qtumjs_cli__events()
+    p = cs_inst.popen(cmd, shell=True)
+
+    cmd = utils.CmdBuiler.qtumjs_cli__mint(qha_a.getHa(), 100)
+    cs_inst.check_output(cmd, shell=True)
+    cs_inst.popen_stdout(p)
+    p.terminate()
+    p.wait()
+
+    cmd = utils.CmdBuiler.qtumjs_cli__balance(qha_a.getHa())
+    cs_inst.check_output(cmd, shell=True)
+
+
 
 def step4_a_transfer_token_to_b(cs_inst, logger):
     pass
@@ -102,8 +126,7 @@ def go_step_by_step(cs_inst, logger):
     step_list = [
         transfer_coin_to_a,
         a_create_erc20contract,
-        #a_deploy_contract,
-        #a_mint_token,
+        a_mint_token,
         #a_transfer_token_to_b,
         #b_transfer_token_to_c
     ]

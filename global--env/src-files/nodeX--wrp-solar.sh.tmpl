@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd %(QTUM_BIN)s
+#cd %(QTUM_BIN)s    #不能在这里简单的切换路径；或者在cd之前，先获取到参数中的相对路径转成绝色路径
 
 PARA__QTUM_RPC="--qtum_rpc=%(NODEX__QTUM_RPC)s"
 CMD="solar $PARA__QTUM_RPC"
