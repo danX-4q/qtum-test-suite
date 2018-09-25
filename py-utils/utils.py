@@ -43,7 +43,7 @@ class CmdBuiler:
         return ('wrp-qtum-cli decoderawtxid %s' % txid)
 
     @staticmethod
-    def qtum_cli__listunspent(min_s=0, max_s=10, addr_filter_json=''):
+    def qtum_cli__listunspent(min_s=0, max_s=20, addr_filter_json=''):
         return ('wrp-qtum-cli listunspent %s %s %s' % (min_s, max_s, addr_filter_json))
 
     @staticmethod
@@ -56,7 +56,10 @@ class CmdBuiler:
 
     @staticmethod
     def qtumjs_cli__mint(ha, value=1000):
-        return ('node wrp-index.js mint %s %s' % (ha, value))
+        if isinstance(ha, CQHAddress):
+            return ('node wrp-index.js mint %s %s #qa=%s' % (ha.getHa(), value, ha.getQa()))
+        else :
+            return ('node wrp-index.js mint %s %s' % (ha, value))
 
     @staticmethod
     def qtumjs_cli__events():
@@ -64,7 +67,10 @@ class CmdBuiler:
     
     @staticmethod
     def qtumjs_cli__balance(ha) :
-        return ('node wrp-index.js balance %s ' % (ha))
+        if isinstance(ha, CQHAddress):
+            return ('node wrp-index.js balance %s #qa=%s' % (ha.getHa(), ha.getQa()))
+        else :
+            return ('node wrp-index.js balance %s' % (ha))
 
 def make_logger(log_file_name) :
 

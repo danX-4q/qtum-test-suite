@@ -105,14 +105,31 @@ def a_mint_token(cs_inst, logger):
     cmd = utils.CmdBuiler.qtumjs_cli__events()
     p = cs_inst.popen(cmd, shell=True)
 
-    cmd = utils.CmdBuiler.qtumjs_cli__mint(qha_a.getHa(), 100)
-    cs_inst.check_output(cmd, shell=True)
+    cmd = utils.CmdBuiler.qtumjs_cli__mint(qha_a, 100)
+    mint_tx = cs_inst.check_output(cmd, shell=True)
     cs_inst.popen_stdout(p, lambda x: x[-5:]==' } }\n')
     p.terminate()
     p.wait()
 
-    cmd = utils.CmdBuiler.qtumjs_cli__balance(qha_a.getHa())
+    cmd = utils.CmdBuiler.qtumjs_cli__balance(qha_a)
     cs_inst.check_output(cmd, shell=True)
+
+    '''
+    mint tx: b76f444b8e80bb79edbbf7fd9a75fb0a99384ee228b992efc7f391b2c87ca5fd
+    { amount: 0,
+      fee: -0.0812,
+      confirmations: 0,
+      ...
+    '''
+    txid = mint_tx.split('\n')[0].split(' ')[2]
+    logger.debug(mint_tx)
+    cmd = utils.CmdBuiler.qtum_cli__gettransaction(txid)
+    cs_inst.check_output(cmd, shell=True)
+    cmd = utils.CmdBuiler.qtum_cli__decoderawtxid(txid)
+    cs_inst.check_output(cmd, shell=True)
+    cmd = utils.CmdBuiler.qtum_cli__listunspent()
+    cs_inst.check_output(cmd, shell=True)
+
 
 def step4_a_transfer_token_to_b(cs_inst, logger):
     pass
