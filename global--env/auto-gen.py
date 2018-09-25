@@ -47,6 +47,8 @@ def main() :
 
     shutil.rmtree(DST_DIR)
     os.mkdir(DST_DIR)
+    with open(os.path.join(DST_DIR, '.gitkeep'), 'w') as f:
+        pass
 
     eval_tmpl_prog(
         os.path.join(SRC_DIR, 'qtum-path.sh.tmpl'), 

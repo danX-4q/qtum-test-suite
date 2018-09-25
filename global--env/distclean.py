@@ -49,7 +49,7 @@ def do(prog_args):
         node_datadir = nodes_env[node_name]['NODEX__QTUM_DATADIR']
         cmd.append('rm -rf %s' % node_datadir)
 
-    print 'to distclean, all commands followed: '
+    print 'to distclean(exclude "/etc/profile.d/qtum-path.sh"), all commands followed: '
     print '#' * 40
     for c in cmd:
         print c
