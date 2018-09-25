@@ -11,7 +11,7 @@ cs_inst = None
 
 def dry_run() :
     cmds = [
-        'wrp-qtum-cli generate 800',
+        'wrp-qtum-cli generate 100',
         'wrp-qtum-cli getnewaddress',
         'wrp-qtum-cli gethexaddress <new-address>',
         'wrp-qtum-cli getbalance'
@@ -20,7 +20,7 @@ def dry_run() :
         print c
 
 def run(cs_inst, logger):
-    cs_inst.check_call('wrp-qtum-cli generate 10', shell=True)
+    cs_inst.check_call('wrp-qtum-cli generate 100', shell=True)
 
     qa_ha = []
     for i in range(10) :
