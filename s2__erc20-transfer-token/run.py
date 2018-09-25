@@ -107,14 +107,12 @@ def a_mint_token(cs_inst, logger):
 
     cmd = utils.CmdBuiler.qtumjs_cli__mint(qha_a.getHa(), 100)
     cs_inst.check_output(cmd, shell=True)
-    cs_inst.popen_stdout(p)
+    cs_inst.popen_stdout(p, lambda x: x[-5:]==' } }\n')
     p.terminate()
     p.wait()
 
     cmd = utils.CmdBuiler.qtumjs_cli__balance(qha_a.getHa())
     cs_inst.check_output(cmd, shell=True)
-
-
 
 def step4_a_transfer_token_to_b(cs_inst, logger):
     pass

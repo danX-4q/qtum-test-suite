@@ -61,6 +61,10 @@ class CmdBuiler:
     @staticmethod
     def qtumjs_cli__events():
         return ('node wrp-index.js events')
+    
+    @staticmethod
+    def qtumjs_cli__balance(ha) :
+        return ('node wrp-index.js balance %s ' % (ha))
 
 def make_logger(log_file_name) :
 
@@ -98,13 +102,15 @@ class CSubprocess :
         p = subprocess.Popen(cmd,shell=shell,stdout=stdout)
         return p
 
-    def popen_stdout(self, p):
+    def popen_stdout(self, p, cb_return=None):
         ret = ''
-        for i in iter(p.stdout.readline, b''):  #until meet the strine ''
+        for i in iter(p.stdout.readline, b''):  #until meet the string ''
             ret += i
+            if cb_return and cb_return(ret):
+                break
+
         self.logger.info('ret-out(popened): %s' % ret)
         return ret
-
 
 
 class CQHAddress:
