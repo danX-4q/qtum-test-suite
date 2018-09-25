@@ -74,12 +74,8 @@ def step0_prepare(cs_inst, logger):
         cs_inst.check_call('yarn install', shell=True)
     else :
         os.chdir('qtumjs-cli')
-        
-def transfer_coin_to_a(cs_inst, logger):
-    global addr_dict
-    qha_a = addr_dict['a']
-    cmd = utils.CmdBuiler.qtum_cli__sendtoaddress(qha_a.getQa(), 100)
-    txid = cs_inst.check_output(cmd, shell=True)
+
+def __dump_tx_info(cs_inst, logger, txid):
     cmd = utils.CmdBuiler.qtum_cli__gettransaction(txid)
     cs_inst.check_output(cmd, shell=True)
     cmd = utils.CmdBuiler.qtum_cli__decoderawtxid(txid)
@@ -87,31 +83,43 @@ def transfer_coin_to_a(cs_inst, logger):
     cmd = utils.CmdBuiler.qtum_cli__listunspent()
     cs_inst.check_output(cmd, shell=True)
 
-def a_create_erc20contract(cs_inst, logger):
-    global addr_dict
-    qha_a = addr_dict['a']
+def __transfer_coin_to_qhaX(cs_inst, logger, qhaX, value):
+    cmd = utils.CmdBuiler.qtum_cli__sendtoaddress(qhaX.getQa(), value)
+    txid = cs_inst.check_output(cmd, shell=True)
+    __dump_tx_info(cs_inst, logger, txid)
+
+def __qhaX_create_contract(cs_inst, logger, qhaX, contract_file, construct_args_str):
     cmd = utils.CmdBuiler.solar__deploy(
-        qha_a.getQa(), 
-        'zeppelin-solidity/contracts/token/ERC20/ERC20Capped.sol',
-        '[21000000]'
-    )
+        qhaX, contract_file, construct_args_str)
     cs_inst.check_call(cmd, shell=True)
     cmd = utils.CmdBuiler.solar__status()
-    cs_inst.check_output(cmd, shell=True)
+    output = cs_inst.check_output(cmd, shell=True)
+    '''output like:
+    ret-out: ✅  zeppelin-solidity/contracts/token/ERC20/ERC20Capped.sol
+         txid: 86a6af5b1eb5c12966348b9ddcc8a68a374fa3f748f29a8e9f40400ef73d1dcf
+      address: bf8f23f647799551b24a30f35bbf7972ce4d9014
+    confirmed: true
+        owner: qSX6Hjuo965jkzpc1uFo1g31mCs4GRE7Lh
+    '''
+    txid = output.split('\n')[1].split(':')[1].strip()
+    __dump_tx_info(cs_inst, logger, txid)
 
-def a_mint_token(cs_inst, logger):
-    global addr_dict
-    qha_a = addr_dict['a']
-    cmd = utils.CmdBuiler.qtumjs_cli__events()
-    p = cs_inst.popen(cmd, shell=True)
+def __qhaX_mint_token(cs_inst, logger, qhaX, value):
 
-    cmd = utils.CmdBuiler.qtumjs_cli__mint(qha_a, 100)
+    b_get_events = False
+    if b_get_events:
+        cmd = utils.CmdBuiler.qtumjs_cli__events()
+        p = cs_inst.popen(cmd, shell=True)
+
+    cmd = utils.CmdBuiler.qtumjs_cli__mint(qhaX, value)
     mint_tx = cs_inst.check_output(cmd, shell=True)
-    cs_inst.popen_stdout(p, lambda x: x[-5:]==' } }\n')
-    p.terminate()
-    p.wait()
 
-    cmd = utils.CmdBuiler.qtumjs_cli__balance(qha_a)
+    if b_get_events:
+        cs_inst.popen_stdout(p, lambda x: x[-5:]==' } }\n')
+        p.terminate()
+        p.wait()
+
+    cmd = utils.CmdBuiler.qtumjs_cli__balance(qhaX)
     cs_inst.check_output(cmd, shell=True)
 
     '''
@@ -122,28 +130,88 @@ def a_mint_token(cs_inst, logger):
       ...
     '''
     txid = mint_tx.split('\n')[0].split(' ')[2]
-    logger.debug(mint_tx)
-    cmd = utils.CmdBuiler.qtum_cli__gettransaction(txid)
-    cs_inst.check_output(cmd, shell=True)
-    cmd = utils.CmdBuiler.qtum_cli__decoderawtxid(txid)
-    cs_inst.check_output(cmd, shell=True)
-    cmd = utils.CmdBuiler.qtum_cli__listunspent()
-    cs_inst.check_output(cmd, shell=True)
+    __dump_tx_info(cs_inst, logger, txid)
 
 
-def step4_a_transfer_token_to_b(cs_inst, logger):
-    pass
+def __qhaX_transfer_token_to_qhaY(cs_inst, logger, qhaX, qhaY, value):
 
-def step5_b_transfer_token_to_c(cs_inst, logger):
-    pass
+    b_get_events = False
+    if b_get_events:
+        cmd = utils.CmdBuiler.qtumjs_cli__events()
+        p = cs_inst.popen(cmd, shell=True)
+
+    cmd = utils.CmdBuiler.qtumjs_cli__transfer(qhaX, qhaY, value)
+    mint_tx = cs_inst.check_output(cmd, shell=True)
+
+    if b_get_events:
+        cs_inst.popen_stdout(p, lambda x: x[-5:]==' } }\n')
+        p.terminate()
+        p.wait()
+
+    cmd = utils.CmdBuiler.qtumjs_cli__balance(qhaX)
+    cs_inst.check_output(cmd, shell=True)
+
+    cmd = utils.CmdBuiler.qtumjs_cli__balance(qhaY)
+    cs_inst.check_output(cmd, shell=True)
+
+    '''
+    mint tx: b76f444b8e80bb79edbbf7fd9a75fb0a99384ee228b992efc7f391b2c87ca5fd
+    { amount: 0,
+      fee: -0.0812,
+      confirmations: 0,
+      ...
+    '''
+    txid = mint_tx.split('\n')[0].split(' ')[2]
+    __dump_tx_info(cs_inst, logger, txid)
+
+def transfer_coin_to_a(cs_inst, logger):
+    global addr_dict
+    qha_a = addr_dict['a']
+    __transfer_coin_to_qhaX(cs_inst, logger, qha_a, 100)
+
+def transfer_coin_to_b(cs_inst, logger):
+    global addr_dict
+    qha_b = addr_dict['b']
+    __transfer_coin_to_qhaX(cs_inst, logger, qha_b, 99)
+
+def a_create_erc20contract(cs_inst, logger):
+    global addr_dict
+    qha_a = addr_dict['a']
+
+    __qhaX_create_contract(cs_inst, logger, qha_a, 
+        'zeppelin-solidity/contracts/token/ERC20/ERC20Capped.sol',
+        '[21000000]'    
+    )
+
+def a_mint_token(cs_inst, logger):
+    global addr_dict
+    qha_a = addr_dict['a']
+    __qhaX_mint_token(cs_inst, logger, qha_a, 100)
+
+def a_transfer_token_to_b(cs_inst, logger):
+    global addr_dict
+    qha_a = addr_dict['a']
+    qha_b = addr_dict['b']
+    __qhaX_transfer_token_to_qhaY(
+        cs_inst, locals, qha_a, qha_b, 40
+    )
+
+def b_transfer_token_to_c(cs_inst, logger):
+    global addr_dict
+    qha_b = addr_dict['b']
+    qha_c = addr_dict['c']
+    __qhaX_transfer_token_to_qhaY(
+        cs_inst, locals, qha_b, qha_c, 15
+    )
 
 def go_step_by_step(cs_inst, logger):
     step_list = [
         transfer_coin_to_a,
         a_create_erc20contract,
         a_mint_token,
-        #a_transfer_token_to_b,
-        #b_transfer_token_to_c
+        a_transfer_token_to_b,
+        transfer_coin_to_b,     #b调用合约转token给c，需要少量coin(token)作为gas
+        b_transfer_token_to_c
     ]
     for i in range(len(step_list)):
         step_name = 'step' + str(i)
@@ -156,18 +224,10 @@ def run(cs_inst, logger):
     step0_prepare(cs_inst, logger)
     go_step_by_step(cs_inst, logger)
 
-    #address = cs_inst.check_output('wrp-qtum-cli getnewaddress', shell=True)
-    #txid = cs_inst.check_output('wrp-qtum-cli sendtoaddress %s 100' % address, shell=True)
-    #txinfo = cs_inst.check_output('wrp-qtum-cli gettransaction %s' % txid, shell=True)
-    #cs_inst.check_output('wrp-qtum-cli decoderawtxid %s' % txid, shell=True)
-    ##cmd = 'wrp-qtum-cli listunspent 0 50 "[\\"%s\\"]"' % address
-    #cmd = 'wrp-qtum-cli listunspent 0 50'
-    #cs_inst.check_output(cmd, shell=True)
-
 def main() :
     global cs_inst
     parser = argparse.ArgumentParser(
-            description="qtum-test-suite -- s1__rpc-transfer-coin",
+            description="qtum-test-suite -- s2__erc20-transfer-token",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument('-d', '--dry-run', action='store_true',

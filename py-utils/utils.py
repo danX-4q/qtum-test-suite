@@ -48,29 +48,30 @@ class CmdBuiler:
 
     @staticmethod
     def solar__deploy(sender, contract_file, construct_args_str):
-        return ('wrp-solar --qtum_sender=%s deploy --force %s %s' % (sender, contract_file, construct_args_str))
+        return ('wrp-solar --qtum_sender=%s deploy --force %s %s' % (sender.getQa(), contract_file, construct_args_str))
     
     @staticmethod
     def solar__status():
         return ('wrp-solar status')
 
     @staticmethod
-    def qtumjs_cli__mint(ha, value=1000):
-        if isinstance(ha, CQHAddress):
-            return ('node wrp-index.js mint %s %s #qa=%s' % (ha.getHa(), value, ha.getQa()))
-        else :
-            return ('node wrp-index.js mint %s %s' % (ha, value))
+    def qtumjs_cli__mint(qha, value=1000):
+        return ('node wrp-index.js mint %s %s #qa=%s' % (qha.getHa(), value, qha.getQa()))
 
     @staticmethod
     def qtumjs_cli__events():
         return ('node wrp-index.js events')
     
     @staticmethod
-    def qtumjs_cli__balance(ha) :
-        if isinstance(ha, CQHAddress):
-            return ('node wrp-index.js balance %s #qa=%s' % (ha.getHa(), ha.getQa()))
-        else :
-            return ('node wrp-index.js balance %s' % (ha))
+    def qtumjs_cli__transfer(qha_a, qha_b, value=40) :
+        return ('node wrp-index.js transfer %s %s %s #qa_b=%s' % 
+            (qha_a.getQa(), qha_b.getHa(), value, qha_b.getQa())
+            #a must be Qa(qtum address, base58), b must be Ha(eth address, hex)
+        )
+
+    @staticmethod
+    def qtumjs_cli__balance(qha) :
+        return ('node wrp-index.js balance %s #qa=%s' % (qha.getHa(), qha.getQa()))
 
 def make_logger(log_file_name) :
 
