@@ -135,6 +135,14 @@ def __qhaX_refund(cs_inst, logger, contract_addr, qhaX, value):
     cmd = utils.CmdBuiler.ctcoinjs_cli__getbalance(qhaX, contract_addr)
     cs_inst.check_output(cmd, shell=True)
 
+def __qhaX_transferCCY_to_qhaY(cs_inst, logger, contract_addr, qhaX, qhaY, msg_value, value):
+    cmd = utils.CmdBuiler.ctcoinjs_cli__transferCCY(qhaX, qhaY, msg_value, value)
+    output = cs_inst.check_output(cmd, shell=True)
+    txid = output.split('\n')[0].split(':')[1].strip()
+    __dump_tx_info(cs_inst, logger, txid)
+    cmd = utils.CmdBuiler.ctcoinjs_cli__getbalance(qhaX, contract_addr)
+    cs_inst.check_output(cmd, shell=True)
+
 def transfer_coin_to_a(cs_inst, logger):
     global addr_dict
     qha_a = addr_dict['a']
@@ -189,6 +197,27 @@ def b_call__refund(cs_inst, logger):
     qha_b = addr_dict['b']
     __qhaX_refund(cs_inst, logger, contract_addr, qha_b, 2)
 
+def a_call__transferCCY_to_b(cs_inst, logger):
+    global addr_dict
+    global contract_addr
+    qha_a = addr_dict['a']
+    qha_b = addr_dict['b']
+    __qhaX_transferCCY_to_qhaY(cs_inst, logger, contract_addr, qha_a, qha_b, 10, 7)
+
+def b_call__transferCCY_to_c(cs_inst, logger):
+    global addr_dict
+    global contract_addr
+    qha_b = addr_dict['b']
+    qha_c = addr_dict['c']
+    __qhaX_transferCCY_to_qhaY(cs_inst, logger, contract_addr, qha_b, qha_c, 13, 6)
+
+def a_call__transferCCY_to_c(cs_inst, logger):
+    global addr_dict
+    global contract_addr
+    qha_a = addr_dict['a']
+    qha_c = addr_dict['c']
+    __qhaX_transferCCY_to_qhaY(cs_inst, logger, contract_addr, qha_a, qha_c, 2, 2)
+
 def go_step_by_step(cs_inst, logger):
     step_list = [
         transfer_coin_to_a, #100
@@ -196,7 +225,7 @@ def go_step_by_step(cs_inst, logger):
         transfer_coin_to_c, #98
         ####
         a_create_ctcoin_contract,
-        ####
+        # ####
         a_call__deposit,        #a -> ct 80
         ####
         a_call__transport_to_b, #ct -> b 30
@@ -205,8 +234,9 @@ def go_step_by_step(cs_inst, logger):
         a_call__refund,         #ct -> a 3
         b_call__refund,         #ct -> b 2
         ####
-        #a_call__transferCCY_to_b,   #a -> ct -> b, msg.value 10, value 7
-        #b_call__transferCCY_to_c,   #b -> ct -> c, msg.value 13, value 7
+        a_call__transferCCY_to_b,   #a -> ct -> b, msg.value 10, value 7
+        b_call__transferCCY_to_c,   #b -> ct -> c, msg.value 13, value 6
+        a_call__transferCCY_to_c,   #a -> ct -> c, msg.value 2, value 2
     ]
     for i in range(len(step_list)):
         step_name = 'step' + str(i)

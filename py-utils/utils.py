@@ -95,6 +95,12 @@ class CmdBuiler:
             'node index.js refund %s %s' % (qha_a.getQa(), value)
         )
 
+    @staticmethod
+    def ctcoinjs_cli__transferCCY(qha_a, qha_b, msg_value=7, value=7):
+        return (
+            'node index.js transferCCY %s %s %s %s' % (qha_a.getQa(), qha_b.getHa(), msg_value, value)
+        )
+
 def make_logger(log_file_name) :
 
     logging.basicConfig(level=logging.DEBUG, 
