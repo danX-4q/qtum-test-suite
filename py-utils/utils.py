@@ -23,8 +23,8 @@ class CmdBuiler:
         return 'wrp-qtum-cli fromhexaddress %s' % ha
 
     @staticmethod
-    def qtum_cli__getnewaddress():
-        return ('wrp-qtum-cli getnewaddress')
+    def qtum_cli__getnewaddress(account=''):
+        return ('wrp-qtum-cli getnewaddress %s' % account)
 
     @staticmethod
     def git_clone(url, dst_dir=''):
@@ -72,6 +72,22 @@ class CmdBuiler:
     @staticmethod
     def qtumjs_cli__balance(qha) :
         return ('node wrp-index.js balance %s #qa=%s' % (qha.getHa(), qha.getQa()))
+
+    @staticmethod
+    def ctcoinjs_cli__deposit(qha, msg_value) :
+        return ('node index.js deposit %s %s' % (qha.getQa(), msg_value))
+
+    @staticmethod
+    def ctcoinjs_cli__transport(qha_a, qha_b, value=30):
+        return (
+            'node index.js transport %s %s %d' % (qha_a.getQa(), qha_b.getHa(), value)
+        )
+
+    @staticmethod
+    def ctcoinjs_cli__getbalance(qha_a, ha):
+        return (
+            'node index.js getbalance %s %s' % (qha_a.getQa(), ha)
+        )
 
 def make_logger(log_file_name) :
 
