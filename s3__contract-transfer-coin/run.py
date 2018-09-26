@@ -162,6 +162,13 @@ def a_call__transport_to_b(cs_inst, logger):
     qha_b = addr_dict['b']
     __qhaX_transport_to_qhaY(cs_inst, logger, contract_addr, qha_a, qha_b, 30)
 
+def c_call__transport_to_b(cs_inst, logger):
+    global addr_dict
+    global contract_addr
+    qha_c = addr_dict['c']
+    qha_b = addr_dict['b']
+    __qhaX_transport_to_qhaY(cs_inst, logger, contract_addr, qha_c, qha_b, 20)
+
 def go_step_by_step(cs_inst, logger):
     step_list = [
         transfer_coin_to_a, #100
@@ -173,11 +180,10 @@ def go_step_by_step(cs_inst, logger):
         a_call__deposit,        #a -> ct 80
         a_call__transport_to_b, #ct -> b 30
         ####
-        #c_call__transport_to_b, #ct -> b 20
+        c_call__transport_to_b, #ct -> b 20
         ####
         #a_call__refund,         #ct -> a 3
         #b_call__refund,         #ct -> b 2
-        #c_call__refund,         #ct -> c 1
         ####
         #a_call__transferCCY_to_b,   #a -> ct -> b, msg.value 10, value 7
         #b_call__transferCCY_to_c,   #b -> ct -> c, msg.value 13, value 7
