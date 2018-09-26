@@ -127,6 +127,14 @@ def __qhaX_transport_to_qhaY(cs_inst, logger, contract_addr, qhaX, qhaY, value):
     cmd = utils.CmdBuiler.ctcoinjs_cli__getbalance(qhaX, contract_addr)
     cs_inst.check_output(cmd, shell=True)
 
+def __qhaX_refund(cs_inst, logger, contract_addr, qhaX, value):
+    cmd = utils.CmdBuiler.ctcoinjs_cli__refund(qhaX, value)
+    output = cs_inst.check_output(cmd, shell=True)
+    txid = output.split('\n')[0].split(':')[1].strip()
+    __dump_tx_info(cs_inst, logger, txid)
+    cmd = utils.CmdBuiler.ctcoinjs_cli__getbalance(qhaX, contract_addr)
+    cs_inst.check_output(cmd, shell=True)
+
 def transfer_coin_to_a(cs_inst, logger):
     global addr_dict
     qha_a = addr_dict['a']
@@ -169,6 +177,18 @@ def c_call__transport_to_b(cs_inst, logger):
     qha_b = addr_dict['b']
     __qhaX_transport_to_qhaY(cs_inst, logger, contract_addr, qha_c, qha_b, 20)
 
+def a_call__refund(cs_inst, logger):
+    global addr_dict
+    global contract_addr
+    qha_a = addr_dict['a']
+    __qhaX_refund(cs_inst, logger, contract_addr, qha_a, 3)
+
+def b_call__refund(cs_inst, logger):
+    global addr_dict
+    global contract_addr
+    qha_b = addr_dict['b']
+    __qhaX_refund(cs_inst, logger, contract_addr, qha_b, 2)
+
 def go_step_by_step(cs_inst, logger):
     step_list = [
         transfer_coin_to_a, #100
@@ -178,12 +198,12 @@ def go_step_by_step(cs_inst, logger):
         a_create_ctcoin_contract,
         ####
         a_call__deposit,        #a -> ct 80
-        a_call__transport_to_b, #ct -> b 30
         ####
+        a_call__transport_to_b, #ct -> b 30
         c_call__transport_to_b, #ct -> b 20
         ####
-        #a_call__refund,         #ct -> a 3
-        #b_call__refund,         #ct -> b 2
+        a_call__refund,         #ct -> a 3
+        b_call__refund,         #ct -> b 2
         ####
         #a_call__transferCCY_to_b,   #a -> ct -> b, msg.value 10, value 7
         #b_call__transferCCY_to_c,   #b -> ct -> c, msg.value 13, value 7

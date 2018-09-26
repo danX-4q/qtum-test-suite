@@ -89,6 +89,12 @@ class CmdBuiler:
             'node index.js getbalance %s %s' % (qha_a.getQa(), ha)
         )
 
+    @staticmethod
+    def ctcoinjs_cli__refund(qha_a, value=5):
+        return (
+            'node index.js refund %s %s' % (qha_a.getQa(), value)
+        )
+
 def make_logger(log_file_name) :
 
     logging.basicConfig(level=logging.DEBUG, 
