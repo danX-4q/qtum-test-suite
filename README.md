@@ -26,7 +26,7 @@ mkdir -p $GOPATH
 
 ### solc
 
- https://github.com/ethereum/solidity的release资源中的solc-static-linux，下载并部署到系统中，改名solc，所在目录在$PATH中。
+ 下载[solc-static-linux](https://github.com/ethereum/solidity/releases/download/v0.4.24/solc-static-linux)并部署到系统中，改名solc，所在目录在$PATH中。
 
 ### qtum
 
