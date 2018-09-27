@@ -6,11 +6,13 @@
 
 略。
 
-### node&npm
+### node & npm & yarn
 
 node: v8.11.4(LTS)
 
 npm: 5.6.0
+
+yarn: 1.9.4
 
 ### go(1.11)
 
