@@ -18,11 +18,19 @@ addr_dict = {}
 def dry_run() :
     cmds = [
         'wrp-qtum-cli getnewaddress',
-        'wrp-qtum-cli sendtoaddress <new-address> <value>',
+        'wrp-qtum-cli sendtoaddress <address> <coin_value>',
         'wrp-qtum-cli gettransaction <txid>',
         'wrp-qtum-cli decoderawtxid <txid>',
         #'wrp-qtum-cli listunspent 0 50 <address-list>'
-        'wrp-qtum-cli listunspent 0 50'
+        'wrp-qtum-cli listunspent 0 50',
+        '####!!!!#### at qtumjs-cli/',
+        'wrp-solar --qtum_sender=<creator_address> deploy --force <sol_file> [contract_constructor_args]',
+        'wrp-solar status',
+        '####!!!!#### at qtumjs-cli/',
+        'node wrp-index.js mint <owner> <value>',
+        'node wrp-index.js transfer <from_addr> <to_addr> <value>',
+        'node wrp-index.js balance <caller>',
+        'node wrp-index.js totalSupply'
     ]
     for c in cmds:
         print c
