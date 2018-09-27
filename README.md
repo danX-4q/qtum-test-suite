@@ -8,19 +8,23 @@
 
 ### node & npm & yarn
 
-node: v8.11.4(LTS)
+* node: v8.11.4(LTS)
+  
+  略，百度。
+* npm: 5.6.0
+  
+  略，百度。
+* yarn: 1.9.4
+  
+    ```shell
+    curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
+    ```
 
-npm: 5.6.0
+### golang
 
-yarn: 1.9.4
-
-### go(1.11)
-
-安装go，apt-get安装的是1.6，不满足使用，卸载；百度到方法，从官方下载二进制包(1.11)进行安装；同时将环境变量设置到文件/etc/profile.d/golang.sh：
+apt-get安装的是1.6，不满足使用，卸载；百度到方法，从官方下载二进制包(1.11)进行安装；同时将环境变量设置到文件/etc/profile.d/golang.sh：
 
 ```shell
-# shellcheck shell=sh
-
 export GOROOT=/opt/go
 export GOPATH=~/go_workspace
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
@@ -30,7 +34,9 @@ mkdir -p $GOPATH
 
 ### solar
 
-```go get -u github.com/qtumproject/solar/cli/solar```
+```shell
+go get -u github.com/qtumproject/solar/cli/solar
+```
 
 ### solc
 
