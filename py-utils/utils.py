@@ -75,30 +75,30 @@ class CmdBuiler:
 
     @staticmethod
     def ctcoinjs_cli__deposit(qha, msg_value) :
-        return ('node index.js deposit %s %s' % (qha.getQa(), msg_value))
+        return ('node wrp-index.js deposit %s %s' % (qha.getQa(), msg_value))
 
     @staticmethod
     def ctcoinjs_cli__transport(qha_a, qha_b, value=30):
         return (
-            'node index.js transport %s %s %d' % (qha_a.getQa(), qha_b.getHa(), value)
+            'node wrp-index.js transport %s %s %d' % (qha_a.getQa(), qha_b.getHa(), value)
         )
 
     @staticmethod
     def ctcoinjs_cli__getbalance(qha_a, ha):
         return (
-            'node index.js getbalance %s %s' % (qha_a.getQa(), ha)
+            'node wrp-index.js getbalance %s %s' % (qha_a.getQa(), ha)
         )
 
     @staticmethod
     def ctcoinjs_cli__refund(qha_a, value=5):
         return (
-            'node index.js refund %s %s' % (qha_a.getQa(), value)
+            'node wrp-index.js refund %s %s' % (qha_a.getQa(), value)
         )
 
     @staticmethod
     def ctcoinjs_cli__transferCCY(qha_a, qha_b, msg_value=7, value=7):
         return (
-            'node index.js transferCCY %s %s %s %s' % (qha_a.getQa(), qha_b.getHa(), msg_value, value)
+            'node wrp-index.js transferCCY %s %s %s %s' % (qha_a.getQa(), qha_b.getHa(), msg_value, value)
         )
 
 def make_logger(log_file_name) :

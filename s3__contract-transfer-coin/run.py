@@ -18,12 +18,21 @@ contract_addr = ''
 
 def dry_run() :
     cmds = [
-        #'wrp-qtum-cli getnewaddress',
-        #'wrp-qtum-cli sendtoaddress <new-address> <value>',
-        #'wrp-qtum-cli gettransaction <txid>',
-        #'wrp-qtum-cli decoderawtxid <txid>',
-        ##'wrp-qtum-cli listunspent 0 50 <address-list>'
-        #'wrp-qtum-cli listunspent 0 50'
+        'wrp-qtum-cli getnewaddress',
+        'wrp-qtum-cli sendtoaddress <address> <coin_value>',
+        'wrp-qtum-cli gettransaction <txid>',
+        'wrp-qtum-cli decoderawtxid <txid>',
+        #'wrp-qtum-cli listunspent 0 50 <address-list>'
+        'wrp-qtum-cli listunspent 0 50',
+        '####!!!!#### at ctcoinjs-cli',
+        'wrp-solar --qtum_sender=<creator_address> deploy --force <sol_file> [contract_constructor_args]',
+        'wrp-solar status',
+        '####!!!!#### at ctcoinjs-cli/',
+        'node wrp-index.js deposit <caller> <coin_value>',
+        'node wrp-index.js transport <caller> <to_addr> <value ["wei"]>',
+        'node wrp-index.js refund <caller> <value ["wei"]>',
+        'node wrp-index.js transferCCY <caller> <to_addr> <coin_value> <value ["wei"]>',
+        'node wrp-index.js getbalance <caller> <contract_addr>'
     ]
     for c in cmds:
         print c
@@ -252,7 +261,7 @@ def run(cs_inst, logger):
 def main() :
     global cs_inst
     parser = argparse.ArgumentParser(
-            description="qtum-test-suite -- s2__erc20-transfer-token",
+            description="qtum-test-suite -- s3__contract-transfer-coin",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument('-d', '--dry-run', action='store_true',
