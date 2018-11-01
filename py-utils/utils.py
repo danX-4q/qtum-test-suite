@@ -110,7 +110,7 @@ class CmdBuiler:
     @staticmethod
     def ctcoinjs_cli__newconwithcoin(account = 10, value = 5):
         return (
-            'node wrp-index.js Newcon %s %s' % (account, value)
+            'node wrp-index.js Newconwithcoin %s %s' % (account, value)
         )
     
 def make_logger(log_file_name) :
