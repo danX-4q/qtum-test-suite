@@ -100,6 +100,11 @@ class CmdBuiler:
         return (
             'node wrp-index.js transferCCY %s %s %s %s' % (qha_a.getQa(), qha_b.getHa(), msg_value, value)
         )
+    @staticmethod
+    def ctcoinjs_cli__transferCCC(contract_addra, contract_addrb, contract_addrc, qhaX, qhbX, qhcX, msg_value, value1, value2, refundValue):
+        return (
+            'node wrp-index.js transferCCC  %s %s %s %s %s %s %s %s %s' % (qhaX.getQa(), contract_addra, contract_addrb, contract_addrc, qhaX.getHa(), msg_value, value1, value2, refundValue)
+        )
 
 def make_logger(log_file_name) :
 
