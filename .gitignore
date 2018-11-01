@@ -4,6 +4,8 @@
 global--env/dst-files/*
 s2__erc20-transfer-token/qtumjs-cli/
 s3__contract-transfer-coin/ctcoinjs-cli/
+s3__ext1__contract-merge-utxo/ctcoinjs-cli/
+s3__ext2__contract-zero-transferCCY/ctcoinjs-cli/
 
 */rt-data/*
 
