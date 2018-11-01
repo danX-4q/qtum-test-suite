@@ -100,7 +100,19 @@ class CmdBuiler:
         return (
             'node wrp-index.js transferCCY %s %s %s %s' % (qha_a.getQa(), qha_b.getHa(), msg_value, value)
         )
+    
+    @staticmethod
+    def ctcoinjs_cli__newcon(value = 10):
+        return (
+            'node wrp-index.js Newcon %s' % (value)
+        )
 
+    @staticmethod
+    def ctcoinjs_cli__newconwithcoin(account = 10, value = 5):
+        return (
+            'node wrp-index.js Newcon %s %s' % (account, value)
+        )
+    
 def make_logger(log_file_name) :
 
     logging.basicConfig(level=logging.DEBUG, 
