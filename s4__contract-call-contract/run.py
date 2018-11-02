@@ -43,7 +43,9 @@ def step0_prepare(cs_inst, logger):
     getnewaddress_with_names(cs_inst, logger, names)
 
     if not os.path.exists('ctcoinjs-cli'):
+        #cs_inst.check_call('git clone https://github.com/danX-4q/ctcoinjs-cli.git ctcoinjs-cli', shell=True)
         cs_inst.check_call('git clone https://github.com/danX-4q/ciccjs-cli.git ciccjs-cli', shell=True)
+        #cs_inst.check_call('git clone https://github.com/danX-4q/ctcoin-solidity.git ctcoinjs-cli/ctcoin-solidity', shell=True)
         cs_inst.check_call('git clone https://github.com/danX-4q/cicc-solidity.git ciccjs-cli/cicc-solidity', shell=True)
         
         #os.chdir('ctcoinjs-cli')
@@ -111,7 +113,7 @@ def __qhaX_create_contract(cs_inst, logger, qhaX, contract_file, construct_args_
     cmd = utils.CmdBuiler.solar__status()
     output = cs_inst.check_output(cmd, shell=True)
     '''output like:
-    ret-out: ✅  cicc-solidity/ContractCreator.sol
+    ret-out: ✅  zeppelin-solidity/contracts/token/ERC20/ERC20Capped.sol
          txid: 86a6af5b1eb5c12966348b9ddcc8a68a374fa3f748f29a8e9f40400ef73d1dcf
       address: bf8f23f647799551b24a30f35bbf7972ce4d9014
     confirmed: true
@@ -136,13 +138,32 @@ def __qhaX_newcon(cs_inst, logger, contract_addr, account):
     cmd = utils.CmdBuiler.ctcoinjs_cli__newcon(account)
     output = cs_inst.check_output(cmd, shell=True)
     txid = output.split('\n')[0].split(':')[1].strip()
-    __dump_tx_info(cs_inst, logger, txid)
+    #__dump_tx_info(cs_inst, logger, txid)
 
 def __qhaX_newconwithcoin(cs_inst, logger, contract_addr, account, value):
     cmd = utils.CmdBuiler.ctcoinjs_cli__newconwithcoin(account, value)
     output = cs_inst.check_output(cmd, shell=True)
     txid = output.split('\n')[0].split(':')[1].strip()
-    __dump_tx_info(cs_inst, logger, txid)
+    cmd = utils.CmdBuiler.qtum_cli__decoderawtxid(txid)
+    tx_detail = cs_inst.check_output(cmd, shell=True)
+    value1_asm = tx_detail.split('\n')[23].split(':')[1].strip()
+    #print('asm',value1_asm)
+    contract_id1 = value1_asm.split(' ')[4]
+    #print('contract_id1',contract_id1)
+    str1 = value1_asm.split(' ')[1]
+    
+    tx_detail1 = cs_inst.check_output(cmd, shell=True)
+    value2_asm = tx_detail1.split('\n')[32].split(':')[1].strip()
+    #print('asm',value2_asm)
+    contract_id2 = value2_asm.split(' ')[4]
+    #print('contract_id2',contract_id2)
+    if str1.isdigit():
+        print('asm',value1_asm)
+        print('contract_id',contract_id1)
+    else:
+        print('asm',value2_asm)
+        print('contract_id',contract_id2)
+
 
 def a_call__newcon(cs_inst, logger):
     global addr_dict
