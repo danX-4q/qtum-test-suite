@@ -1,3 +1,3 @@
-[submodule "s5__contract-call-contract/ctcoinjs-cli"]
-	path = s5__contract-call-contract/ctcoinjs-cli
-	url = https://github.com/danX-4q/ctcoinjs-cli.git
+[submodule "s5__contract-call-contract/ciccjs-cli"]
+	path = s5__contract-call-contract/ciccjs-cli
+	url = https://github.com/danX-4q/ciccjs-cli.git

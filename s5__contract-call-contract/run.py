@@ -26,10 +26,10 @@ def dry_run() :
         'wrp-qtum-cli decoderawtxid <txid>',
         #'wrp-qtum-cli listunspent 0 50 <address-list>'
         'wrp-qtum-cli listunspent 0 50',
-        '####!!!!#### at ctcoinjs-cli',
+        '####!!!!#### at ciccjs-cli',
         'wrp-solar --qtum_sender=<creator_address> deploy --force <sol_file> [contract_constructor_args]',
         'wrp-solar status',
-        '####!!!!#### at ctcoinjs-cli/',
+        '####!!!!#### at ciccjs-cli/',
         'node wrp-index.js deposit <caller> <coin_value>',
         'node wrp-index.js transport <caller> <to_addr> <value ["wei"]>',
         'node wrp-index.js refund <caller> <value ["wei"]>',
@@ -53,11 +53,11 @@ def step0_prepare(cs_inst, logger):
     names = ['a', 'b', 'c']
     getnewaddress_with_names(cs_inst, logger, names)
 
-    if not os.path.exists('ctcoinjs-cli'):
-        cs_inst.check_call('git clone https://github.com/danX-4q/ctcoinjs-cli.git ctcoinjs-cli', shell=True)
-        cs_inst.check_call('git clone https://github.com/danX-4q/ctcoin-solidity.git ctcoinjs-cli/ctcoin-solidity', shell=True)
+    if not os.path.exists('ciccjs-cli'):
+        cs_inst.check_call('git clone https://github.com/danX-4q/ciccjs-cli.git ciccjs-cli', shell=True)
+        cs_inst.check_call('git clone https://github.com/danX-4q/cicc-solidity.git ciccjs-cli/cicc-solidity', shell=True)
         
-        os.chdir('ctcoinjs-cli')
+        os.chdir('ciccjs-cli')
         env_inst = utils.CEnv()
         def cb_apply_env(prog_env, nodes_env):
             for node_name in sorted(nodes_env.keys()) :
@@ -80,7 +80,7 @@ def step0_prepare(cs_inst, logger):
 
         cs_inst.check_call('yarn install', shell=True)
     else :
-        os.chdir('ctcoinjs-cli')
+        os.chdir('ciccjs-cli')
 
 def __dump_tx_info(cs_inst, logger, txid):
     cmd = utils.CmdBuiler.qtum_cli__gettransaction(txid)
@@ -198,7 +198,7 @@ def a_create_ctcoin_contract(cs_inst, logger):
     qha_a = addr_dict['a']
 
     __qhaX_create_contract(cs_inst, logger, qha_a, 
-        'ctcoin-solidity/ctcoin.sol', '')
+        'cicc-solidity/ctcoin.sol', '')
 
 def a_create_contractA_contract(cs_inst, logger):
     global addr_dict
@@ -207,7 +207,7 @@ def a_create_contractA_contract(cs_inst, logger):
     qha_a = addr_dict['a']
 
     contract_addra = __qhaX_create_contract(cs_inst, logger, qha_a, 
-        'ctcoin-solidity/ContractA.sol', '')
+        'cicc-solidity/ContractA.sol', '')
     contract_addr_dict.update({'a' : contract_addra})
 
 def a_create_contractB_contract(cs_inst, logger):
@@ -217,7 +217,7 @@ def a_create_contractB_contract(cs_inst, logger):
     qha_b = addr_dict['b']
 
     contract_addrb = __qhaX_create_contract(cs_inst, logger, qha_b, 
-        'ctcoin-solidity/ContractB.sol', '')
+        'cicc-solidity/ContractB.sol', '')
     contract_addr_dict.update({'b' : contract_addrb})
 
 def a_create_contractC_contract(cs_inst, logger):
@@ -227,7 +227,7 @@ def a_create_contractC_contract(cs_inst, logger):
     qha_c = addr_dict['c']
 
     contract_addrc = __qhaX_create_contract(cs_inst, logger, qha_c, 
-        'ctcoin-solidity/ContractC.sol', '')
+        'cicc-solidity/ContractC.sol', '')
     contract_addr_dict.update({'c' : contract_addrc})
 
 def a_call__deposit(cs_inst, logger):
